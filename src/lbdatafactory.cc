@@ -157,6 +157,9 @@ LBDataFactory::process(const vector<string> &path, int depth, const string &key,
   else if (path[0] == "hook") {
     process_hook(l_key,l_value);
   }
+  else if (path[0] == "post-hook") {
+    process_post_hook(l_key,l_value);
+  }
   else if (path[0] == "health") {
     if (depth == 2 && key == "interface") {
       process_health(l_key,l_value);
@@ -250,6 +253,14 @@ LBDataFactory::process_hook(const string &key, const string &value)
 }
 
 void
+LBDataFactory::process_post_hook(const string &key, const string &value)
+{
+  if (value.empty() == false) {
+    _lb_data._post_hook = value;
+  }
+}
+
+void
 LBDataFactory::process_health(const string &key, const string &value) 
 {
   if (value.empty() == false) {
@@ -265,7 +276,7 @@ void
 LBDataFactory::process_health_interface(const string &key, const string &value) 
 {
   if (key == "success-ct") {
-    int num = strtoul(value.c_str(), NULL, 10);
+    int num = strtoul(value.c_str(), NULL, 10000);
     if (num > 0) {
       _health_iter->second._success_ct = num;
     }
@@ -277,7 +288,7 @@ LBDataFactory::process_health_interface(const string &key, const string &value)
     }
   }
   else if (key == "failure-ct") {
-    int num = strtoul(value.c_str(), NULL, 10);
+    int num = strtoul(value.c_str(), NULL, 10000);
     if (num > 0) {
       _health_iter->second._failure_ct = num;
     }
